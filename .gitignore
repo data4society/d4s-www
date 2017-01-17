@@ -1,0 +1,14 @@
+logs
+*.log
+dist
+node_modules
+.lock-wscript
+.test
+.npm
+
+# Production config
+config/production.json
+ecosystem.json
+
+# Uploaded files
+uploads/*

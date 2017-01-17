@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+		<!-- head -->
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<title>Data for Society e.V.</title>
+		<link href='http://fonts.googleapis.com/css?family=Lato:400,700,400italic' rel='stylesheet' type='text/css'>
+		<link href='http://fonts.googleapis.com/css?family=Josefin+Sans:400,600' rel='stylesheet' type='text/css'>
+		<link href="http://fonts.googleapis.com/css?family=Merriweather:300,700,700italic,300italic" rel="stylesheet" type="text/css" />
+		<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
+		<link href="/app.css" rel="stylesheet">
+	</head>
+
+	<body>
+		<!-- main nav -->
+		<header id="main-header">
+			<div class="container">
+				<div class="row">
+					<nav class="navbar navbar-d4s bg-faded">
+						<a class="navbar-brand" href="/">
+							<h1>Data for Society</h1>
+						</a>
+						<button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#main-menu">
+							&#9776;
+						</button>
+						<div class="collapse navbar-toggleable-xs" id="main-menu">
+							<ul class="nav navbar-nav pull-right">
+								<li class="nav-item active">
+									<a class="nav-link" href="/projects">
+										<span>Projects</span>
+									</a>
+								</li>
+								<li class="nav-item ">
+									<a class="nav-link" href="/blog">
+										<span>Blog</span>
+									</a>
+								</li>
+								<li class="nav-item ">
+									<a class="nav-link" href="/about">
+										<span>About</span>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</nav>
+				</div>
+			</div>
+		</header>
+    <article class="page">
+    	<!-- header with nav -->
+				<header class="with-background" style="background-image:url('/assets/projects/archivist.jpg');">
+          <div class="intro center-block">
+            <h1 class="intro-title">Archivist</h1>
+            <div class="intro-absract">
+              <p class="lead">A full-stack publishing solution involving different technologies to power digital archives.</p>
+            </div>
+            <ul class="nav nav-inner">
+            
+              <li class="nav-item ">
+                <a href="/projects/archivist" class="nav-link">Overview</a>
+              </li>
+            
+              <li class="nav-item active">
+                <a href="/projects/archivist/tech" class="nav-link">Technology</a>
+              </li>
+            
+              <li class="nav-item ">
+                <a href="/projects/archivist/code" class="nav-link">Source code</a>
+              </li>
+            
+            </ul>
+          </nav>
+        </header>
+      <div class="container">
+        <div class="row">
+          <div class="prose col-sm-8 col-sm-offset-2">
+
+            <p>Archivist is set of tools which all are communicating with Node.js server API, let's describe data models and each components afterwards.</p>
+
+            <h2><a id="user-content-document-models" class="anchor" href="#document-models" aria-hidden="true"><span class="octicon octicon-link"></span></a>Document Models</h2>
+
+            <p>There are several document models involved: interviews, subjects, entities and users.
+            Interviews contain the transcripted text plus annotations and metadata, subjects are organized as a tree-structured ontology, and entities are just a list or set of units having additional information. Along with creating interview transcriptions, also the other ontologies are refined and extended. E.g., sometimes the editors merge two subjects or entities into one. Such changes need to have an immediate effect on the interviews, too, e.g., subject/entity references inside document need to be updated to reflect this change.</p>
+
+            <h3><a id="user-content-interviews" class="anchor" href="#interviews" aria-hidden="true"><span class="octicon octicon-link"></span></a>Interviews</h3>
+
+            <p>A custom but pretty conventional type of document, where paragraphs are statements of one person, the interviewer or the interviewee (still you can use it as usual paragraphs). The interview is annotated with basic markup, references to subjects, entities, and editor comments.</p>
+
+            <p>Interview model also contains <a href="https://github.com/archivist/archivist-core/blob/master/interview/nodes/document_node.js">a lot of metadata properties</a>.
+            If you will deceide to change it don't forget to change content of <a href="https://github.com/archivist/archivist/blob/master/server/models/document.js#L69">mongodb empty document</a>.</p>
+
+            <h3><a id="user-content-subjects" class="anchor" href="#subjects" aria-hidden="true"><span class="octicon octicon-link"></span></a>Subjects</h3>
+
+            <p>The whole ontology is stored in <a href="https://github.com/archivist/archivist-core/blob/master/interview/subjects_model.js">one model</a> having a tree-structure, while nodes are stored inside <a href="https://github.com/archivist/archivist/blob/master/server/models/subject.js#L17">mongodb collection with extra information</a>.
+            Basicly each subject node have these properties:</p>
+
+            <ul>
+            <li>name (used to display subject names in public part of archive)</li>
+            <li>workname (used to display subject names in closed part of archive, e.g. Archivist Writer)</li>
+            <li>description (subject description, currently it's not display anywhere outside of tree manager)</li>
+            <li>parent (reference to the parent node inside tree)</li>
+            <li>position (position inside tree leaf)</li>
+            </ul>
+
+            <h3><a id="user-content-entities" class="anchor" href="#entities" aria-hidden="true"><span class="octicon octicon-link"></span></a>Entities</h3>
+
+            <p>There are different types of entities:</p>
+
+            <ul>
+            <li><a href="https://github.com/archivist/archivist/blob/master/server/models/location.js#L14">locations</a> (toponyms and prisons, they are different, but both contains geo-locational information)</li>
+            <li><a href="https://github.com/archivist/archivist/blob/master/server/models/person.js#L13">persons</a></li>
+            <li><a href="https://github.com/archivist/archivist/blob/master/server/models/definition.js#L13">definitions</a></li>
+            </ul>
+
+            <p>All entities are pretty much independent from each other.</p>
+
+            <h3><a id="user-content-users" class="anchor" href="#users" aria-hidden="true"><span class="octicon octicon-link"></span></a>Users</h3>
+
+            <p><a href="https://github.com/archivist/archivist/blob/master/server/models/user.js#L10">User schema</a> is pretty much oriented to store Google profile. However there is one important thing. Each user have <em>access</em> and <em>super</em> properties. First one it to grant access for the editing, second one is for granting <em>super access</em>. Super user can manage users and perform dangerous operations, e.g. merging and removing subjects and entities. </p>
+
+            <h2><a id="user-content-archivist-components" class="anchor" href="#archivist-components" aria-hidden="true"><span class="octicon octicon-link"></span></a>Archivist Components</h2>
+
+            <h3><a id="user-content-archivist-writer" class="anchor" href="#archivist-writer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Archivist Writer</h3>
+
+            <p>At the heart of the platform there’s Archivist Writer, a modern web-editor which allows you to annotate your text with basic markup and external data, e.g. you can:</p>
+
+            <ul>
+            <li>reference entities inside text </li>
+            <li>mark any piece of text as related to some set of terms from an ontology-tree</li>
+            <li>insert timecodes to synchronize text with media source</li>
+            <li>leave comments for any piece of text for editors/researches collaboration</li>
+            <li>describe the document’s metadata</li>
+            </ul>
+
+            <p>Some of the interviews from Memorial’s Ost-Arbeiters archive last over 7 hours of time. The resulting documents are typically incredibly large, e.g., more than 10000 paragraphs, having the same amount of annotations and comments attached to it.</p>
+
+            <p>Archivist Writer protects every request using Archivists <a href="#authentication">Auth API</a>.</p>
+
+            <p>In the current Archivist platform we use a classical locking approach to avoid concurrent editing hazards. E.g. every document has version number, if your document version isn't equal to server one you'll not be able to save it.</p>
+
+            <p>You can connect any external data storage for referencing, basicly you just need to expose it as JSON REST API. Archivist as platform use <a href="#archvist-managers">special set of managers for managing data</a>. 
+            Archivist Writer is built on top of <a href="https://github.com/substance/substance">Substance library</a>. It's available as part of <a href="#archivist-core">Archivist Core</a>.</p>
+
+            <p>If you want to use it in your project you'll probably need to overwrite <a href="https://github.com/archivist/archivist-core/tree/master/writer/components">writer components</a> as well as <a href="#interviews">document schema</a>.</p>
+
+            <p>You can learn how to connect Archivist Writer to your application by discover <a href="https://github.com/archivist/archivist/tree/master/src/writer">source code</a> of Archivist.</p>
+
+            <h3><a id="user-content-archivist-reader" class="anchor" href="#archivist-reader" aria-hidden="true"><span class="octicon octicon-link"></span></a>Archivist Reader</h3>
+
+            <p>Archivist Reader was developed to present interviews in the best possible way.
+            It makes possible exploring linked resources without losing the place in the interview. You can jump straight to the media source in that places where editors placed timecodes, so you can read and listen or watch the original record. Again without losing position in the text. All resources (locations, persons, etc.) have links to the [resource browser], so you can see a full description of locations and persons etc. as well as access all interviews where a specific entity was mentioned. You can also see every location on a map using our <a href="#map-browser">map browser</a>.</p>
+
+            <p>Topics panel contains index like computed tree of used in concrete interviews subjects.
+            You can click on each subject or entity and see where it mentioned inside of the document, e.g. it will hightlight exact fragments of text, scrollbar hightlighting will help you to understand where other fragemnts located.</p>
+
+            <p>Archivist Reader designed to play videos from <a href="https://vimeo.com">Vimeo online video platform</a>. It uses <a href="https://github.com/vimeo/player-api/tree/master/javascript">Vimeo JS API library Froogaloop</a> for easiest video control.
+            For playing audio files Reader use <a href="https://github.com/happyworm/jPlayer">jPlayer library</a>. You will need to upload audio files to your <a href="#media-server">media server</a> in two formats (mp3, ogg) to cover most of the modern browsers compability.</p>
+
+            <p>Archivist Reader shared a lot of code with <a href="#archivist-writer">Archivist Writer</a>. It is also built on top of <a href="https://github.com/substance/substance">Substance library</a> and available as part of <a href="#archivist-core">Archivist Core</a>.</p>
+
+            <p>Again, if you want to use it in your project you'll need to overwrite <a href="https://github.com/archivist/archivist-core/tree/master/reader/components">reader components</a> as well as <a href="#interviews">document schema</a>.</p>
+
+            <p>You can learn how to connect Archivist Reader to your application by discover <a href="https://github.com/archivist/archivist/tree/master/src/reader">source code</a> of Archivist.</p>
+
+            <h3><a id="user-content-archivist-browser" class="anchor" href="#archivist-browser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Archivist Browser</h3>
+
+            <p>Archivist Browser is the main entry point for your archive.
+            Here you can see a list of all documents from your archive, perform full-text search queries and filter using the ontology tree.
+            Archivist Browser connected to our <a href="#indexer">indexer API</a> which is kind of interface for running <a href="https://www.elastic.co/">ElasticSearch</a> queries. Read more about indexing part of Archivist <a href="#indexer">below</a>.
+            From the result list you are able to jump right into an interview highlighting the subject or entity you were interested in.</p>
+
+            <p>If your query matched name of entity (or synonym) which are mentioned in published documents it will tell you that it founds articles about that entity. Article names are links to [resource browser] pages.</p>
+
+            <p>Archivist Browser is based on <a href="http://lens.elifesciences.org/">Lens Browser</a> from <a href="http://elifesciences.org/">eLife</a> (thanks to eLife to make it <a href="https://github.com/elifesciences/lens-browser">available as an open source project</a>). It's also available as part of <a href="#archivist-core">Archivist Core</a>.</p>
+
+            <p>You can learn a lot from <a href="https://github.com/archivist/archivist-core/tree/master/browser">Archivist Browser source code</a> and <a href="#indexer">indexer API</a>, but from our expierense Elastic Search configurations is too much related to concreate project.</p>
+
+            <h3><a id="user-content-resource-browser" class="anchor" href="#resource-browser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Resource Browser</h3>
+
+            <p>This is additional peace to Archivist Browser, it will print you all details related to concreate entity as well as list of documents where this entity mentioned (with counters). From this list you can jump right into a document highlighting the entity you were interested in.</p>
+
+            <p>It's very simple application which is built using <a href="https://github.com/substance/substance/blob/master/ui/component.js">Substance light-weight component implementation</a> inspired by React and Ember.</p>
+
+            <p>Checkout <a href="https://github.com/archivist/archivist/tree/master/src/resources">source code</a>.</p>
+
+            <h3><a id="user-content-map-browser" class="anchor" href="#map-browser" aria-hidden="true"><span class="octicon octicon-link"></span></a>Map Browser</h3>
+
+            <p>Map Browser is a map interface with two clustered layers which represents all records of toponyms and prisons entities. While hovering each point you’ll see the name of location and how often it’s mentioned in documents of your archive, you can click on the exact point and get the full description as well as all referenced documents complete with links to entry point of that entities inside a document.</p>
+
+            <p>Map Browser built on top of <a href="https://github.com/mapbox/mapbox.js">mapbox.js library</a>, e.g. you can use your own tiles with the help of <a href="https://www.mapbox.com">Mapbox platform</a>. 
+            Map Browser use power of <a href="http://leafletjs.com/">Leaflet.js</a> and it's <a href="https://github.com/Leaflet/Leaflet.markercluster">marker clustering plugin</a> to let you browse your document collection from geographical perspective. </p>
+
+            <p>Map Browser also built using <a href="https://github.com/substance/substance/blob/master/ui/component.js">Substance components</a>.</p>
+
+            <p>Checkout <a href="https://github.com/archivist/archivist/tree/master/src/map">source code</a>.</p>
+
+            <h3><a id="user-content-archvist-managers" class="anchor" href="#archvist-managers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Archvist Managers</h3>
+
+            <p>Protected part of Archivist contains set of data managers. All of them built on top of <a href="http://backbonejs.org/">Backbone.js library</a>.
+            Let's look at them shortly.</p>
+
+            <h4><a id="user-content-documents-dashboard" class="anchor" href="#documents-dashboard" aria-hidden="true"><span class="octicon octicon-link"></span></a>Documents dashboard</h4>
+
+            <p>Here you can see a list of documents. You can open exisitng, remove old one or create new document. You'll see when the document was edited last time as well as who edit exactly did it.
+            Workflow and title filters will help you to find desired document.
+            Document's workflow include four statuses: <em>transcripted</em>, <em>verified</em>, <em>finshed</em> and <em>published</em>. They are defined inside <a href="#interviews">document schema</a> and can be edited inside <a href="#archivist-writer">Archivist Writer</a> along with other metadata.</p>
+
+            <h4><a id="user-content-subjects-manager" class="anchor" href="#subjects-manager" aria-hidden="true"><span class="octicon octicon-link"></span></a>Subjects manager</h4>
+
+            <p>Subjects manager represents your ontology as a big hierarchical tree with names and counters (you will see number of fragments for each subject summed up by the tree and number of referenced documents). You can manage subjects right here. E.g. you can</p>
+
+            <ul>
+            <li>add new subject</li>
+            <li>find subject by name</li>
+            <li>edit subjects name/workname/description</li>
+            <li>move subjects across tree leafs</li>
+            <li>request list of referenced documents</li>
+            <li>remove subjects</li>
+            <li>merge subjects
+            Last two operations will activate <a href="#maintanence-mode">maintanance mode</a>.</li>
+            </ul>
+
+            <p>Subjects manager use <a href="https://github.com/vakata/jstree/">jstree library</a> for tree editing and represenation of data.</p>
+
+            <h4><a id="user-content-locations-managers" class="anchor" href="#locations-managers" aria-hidden="true"><span class="octicon octicon-link"></span></a>Locations managers</h4>
+
+            <p>Locations managers (toponyms and prisons) consists of list (similar to documents dashboard but with refernce counting and ability to request a list of referenced documents) and map views.
+            You can add new locations in modal form. Forms are different for toponyms and prisons. However each of these forms contains maps with reversal geocoding for chosing location. You can also add number of synonyms for each location, later this values will be used as synonyms of location name inside <a href="#archivist-browser">archivist browser</a>.
+            All locations without geo coordinates will be placed in list inside map views, so you can easily fix them.</p>
+
+            <h4><a id="user-content-persons-manager" class="anchor" href="#persons-manager" aria-hidden="true"><span class="octicon octicon-link"></span></a>Persons manager</h4>
+
+            <p>Persons manager is very similar to locations lists. You can also filter persons by global property. We used this property to filter out persons which a local to the document, e.g. we don't have enough information about person and it'll be excluded from search index.</p>
+
+            <h4><a id="user-content-definitions-manager" class="anchor" href="#definitions-manager" aria-hidden="true"><span class="octicon octicon-link"></span></a>Definitions manager</h4>
+
+            <p>Definitions also inherited list view style with modal forms. For Memorial International Memorial's archive we used four different types of definitions: general comments, prison camp reality, abbreveations, language comments. Last two types are excluded from search index.</p>
+
+            <h4><a id="user-content-entity-merging-manager" class="anchor" href="#entity-merging-manager" aria-hidden="true"><span class="octicon octicon-link"></span></a>Entity merging manager</h4>
+
+            <p>This is manager which allows you to merge two entities. Even different types of entities could be merged. This manager available only for super users cause it will activate <a href="#maintanence-mode">maintanance mode</a>.</p>
+
+            <h4><a id="user-content-user-manager" class="anchor" href="#user-manager" aria-hidden="true"><span class="octicon octicon-link"></span></a>User manager</h4>
+
+            <p>This manager used for granting or restriction access to the protected part of Archivist. You can gave access to editing document/entities/subkects or assign super users.</p>
+
+            <p>This manager available only for super users.</p>
+
+            <h1><a id="user-content-server-apis" class="anchor" href="#server-apis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Server APIs</h1>
+
+            <p>Let's look into server code.</p>
+
+            <p><a href="https://github.com/archivist/archivist/tree/master/server">Source code</a> contains three folders:</p>
+
+            <ul>
+            <li>views (it contains <a href="http://jade-lang.com">Jade</a> templates)</li>
+            <li>models (here you can find <a href="http://mongoosejs.com/">mongoose</a> data models definitions as well as a lot of static methods attached to each schema)</li>
+            <li>controllers (here you can find a lot of APIs)</li>
+            </ul>
+
+            <p>Let me describe some of the most important concepts.</p>
+
+            <h2><a id="user-content-rest-like-apis" class="anchor" href="#rest-like-apis" aria-hidden="true"><span class="octicon octicon-link"></span></a>REST like APIs</h2>
+
+            <p>All entities use <a href="https://github.com/archivist/archivist/blob/master/server/controllers/shared/rest.js">mongoose rest plugin</a> which attach REST like methods to their schemas.</p>
+
+            <h2><a id="user-content-maintanence-mode" class="anchor" href="#maintanence-mode" aria-hidden="true"><span class="octicon octicon-link"></span></a>Maintanence mode</h2>
+
+            <p>During merging or removing entities/subjects system will activate a <a href="https://github.com/archivist/archivist/blob/master/server/controllers/shared/maintenance.js">maintanence mode</a>.
+            This means that no one will allowed to save any changes until all affected documents will changed. All users who are editing afected documents will be forced to refresh Archivist Writer.</p>
+
+            <p>System will create a backup of all changed documents and will restore it in case of any errors. If your system will crashed you'll likely stuck in maintenance mode. In this case you'll need to change maintanace mode flag manually. It is stored as a document inside mongodb system collection.</p>
+
+            <h2><a id="user-content-caching" class="anchor" href="#caching" aria-hidden="true"><span class="octicon octicon-link"></span></a>Caching</h2>
+
+            <p>Some APIs used <a href="https://github.com/archivist/archivist/blob/master/server/controllers/shared/cache.js">in memory caching</a>. You can define how often this cache will be refreshed.</p>
+
+            <h2><a id="user-content-indexer" class="anchor" href="#indexer" aria-hidden="true"><span class="octicon octicon-link"></span></a>Indexer</h2>
+
+            <p>All Elastic Search related things are defined <a href="https://github.com/archivist/archivist/tree/master/server/controllers/indexer">here</a>.
+            For indexing Archivist used special <a href="https://github.com/archivist/archivist/blob/master/server/controllers/shared/queue.js">queue API</a> which will gradually process all of your indexing tasks.
+            If you need to run mass operations like index seeding or reindexing all documents do it from localhost, don't forget to uncommen <a href="https://github.com/archivist/archivist/blob/master/server/controllers/api/indexer.js#L112">this routes</a>. Don't expose this methods on production server.</p>
+
+            <p>You can turn off indexing in your <a href="#install">.env file</a>. In this case system will only run protected part of Archvist, e.g. <a href="#archvist-managers">managers</a> and <a href="#archivist-writer">writer</a>. </p>
+
+            <h2><a id="user-content-authentication" class="anchor" href="#authentication" aria-hidden="true"><span class="octicon octicon-link"></span></a>Authentication</h2>
+
+            <p>Archivist use Google OAuth 2 for authentication (we are using <a href="http://passportjs.org/">passport.js</a> for that, so you can easily add more methods). For any other operations we are using <a href="http://jwt.io/">JWT</a>. Tokens are stored in user's localStorage, they are valid during one week. Token will be automaticaly renewed in lat two days if user will remain active, otherwise user will be forced to login after one week. Before every operation we are validating token and checking user permissions.</p>
+
+            <h2><a id="user-content-public-apis" class="anchor" href="#public-apis" aria-hidden="true"><span class="octicon octicon-link"></span></a>Public APIs</h2>
+
+            <p>Most of public APIs, e.g. for open part of archive are <a href="https://github.com/archivist/archivist/blob/master/server/controllers/api/public.js">exposed here</a>. All of them are read-only and some are <a href="#caching">cached</a>.</p>
+
+            <h1><a id="user-content-archivist-core" class="anchor" href="#archivist-core" aria-hidden="true"><span class="octicon octicon-link"></span></a>Archivist Core</h1>
+
+            <p>Archivist Core is isolated repository which contains:</p>
+
+            <ul>
+            <li>Interview Model</li>
+            <li>Archivist Writer</li>
+            <li>Archivist Reader</li>
+            <li>Archivist Browser</li>
+            </ul>
+
+            <p>All of that tools use <a href="https://github.com/archivist/substance">legacy version of Substance library</a>.
+            All of them are available under MIT license.</p>
+
+            <h1><a id="user-content-translations" class="anchor" href="#translations" aria-hidden="true"><span class="octicon octicon-link"></span></a>Translations</h1>
+
+            <p>You can translate interfaces of all open accessed tools using <a href="http://airbnb.io/polyglot.js/polyglot.html">polyglot.js</a>. Just fill all translations in <a href="https://github.com/archivist/archivist/tree/master/src/i18n">language files</a> and require <a href="https://github.com/archivist/archivist/blob/master/src/i18n/load.js">our loader</a>. You can implement laguage switcher that will call <code>i18n.switchLocale(locale)</code> function, then after refresh you'll get translated interface.</p>
+
+            <h1><a id="user-content-media-server" class="anchor" href="#media-server" aria-hidden="true"><span class="octicon octicon-link"></span></a>Media server</h1>
+
+            <p>For Archivist Reader you will also need to run static server with your audio files and photos.
+            Archivist will expect to get respondent photos from <em>photos</em> folder and audio records from <em>audio</em> folder.</p>
+
+            <h1><a id="user-content-coming-soon" class="anchor" href="#coming-soon" aria-hidden="true"><span class="octicon octicon-link"></span></a>Coming soon</h1>
+
+            <ul>
+            <li>Persons index</li>
+            <li>Find and replace</li>
+            <li>Bug fixes ;)</li>
+            </ul>
+
+            <h1><a id="user-content-install" class="anchor" href="#install" aria-hidden="true"><span class="octicon octicon-link"></span></a>Install</h1>
+
+            <p>Archivist used environment file for all sensetive settings. Here is the list of available settings.</p>
+
+            <table><thead>
+            <tr>
+            <th>Variable name</th>
+            <th>Description</th>
+            </tr>
+            </thead><tbody>
+            <tr>
+            <td>ARCHIVIST_HOST</td>
+            <td>Url of your archive</td>
+            </tr>
+            <tr>
+            <td>AUTH_SECRET</td>
+            <td>Secret key to sign <a href="http://jwt.io/">JSON Web Tokens (JWT)</a></td>
+            </tr>
+            <tr>
+            <td>ES_HOST</td>
+            <td>Elastic Search instance url</td>
+            </tr>
+            <tr>
+            <td>INDEX</td>
+            <td>Turn on indexing (true or false)</td>
+            </tr>
+            <tr>
+            <td>GOOGLE_CALLBACK</td>
+            <td>One of the redirect_uri values obtained from the <a href="https://console.developers.google.com/">Google Developers Console</a></td>
+            </tr>
+            <tr>
+            <td>GOOGLE_ID</td>
+            <td>The client ID you obtain from the <a href="https://console.developers.google.com/">Google Developers Console</a></td>
+            </tr>
+            <tr>
+            <td>GOOGLE_SECRET</td>
+            <td>The client secret you obtained from the <a href="https://console.developers.google.com/">Google Developers Console</a></td>
+            </tr>
+            <tr>
+            <td>MEDIA_HOST</td>
+            <td>Url of your <a href="#media-server">media storage</a></td>
+            </tr>
+            <tr>
+            <td>MAPBOX_MAPID</td>
+            <td>Mapbox <a href="https://www.mapbox.com/help/define-map-id/">map ID</a></td>
+            </tr>
+            <tr>
+            <td>MAPBOX_TOKEN</td>
+            <td>Mapbox <a href="https://www.mapbox.com/help/define-access-token/">access token</a></td>
+            </tr>
+            <tr>
+            <td>MONGO_URL</td>
+            <td>MongoDB <a href="http://docs.mongodb.org/manual/reference/connection-string/#standard-connection-string-format">connection URI</a></td>
+            </tr>
+            <tr>
+            <td>RS_NAME</td>
+            <td>MongoDB <a href="http://docs.mongodb.org/manual/reference/glossary/#term-replica-set">replica set</a> name (optional)</td>
+            </tr>
+            </tbody></table>
+
+            <p>Put them in .env file inside the root of Archivist directory, like this:</p>
+
+            <pre><code>ARCHIVIST_HOST=localhost:5000
+            AUTH_SECRET=yourSescret
+            ES_HOST=http://localhsot:9200
+            etc
+            </code></pre>
+
+            <p>Install <a href="https://toolbelt.heroku.com/">Heroku Toolbelt</a> or <a href="https://github.com/ddollar/foreman">Foreman</a>. 
+            <a href="https://docs.npmjs.com/getting-started/fixing-npm-permissions">Fix npm permissions</a> if you still didn't do it. Then pull in npm and Substance modules</p>
+
+            <pre><code>$ npm install
+            </code></pre>
+
+            <p>Now you can run the server</p>
+
+            <pre><code>npm start
+            </code></pre>
+
+            <h1><a id="user-content-development" class="anchor" href="#development" aria-hidden="true"><span class="octicon octicon-link"></span></a>Development</h1>
+
+            <p>You can use <a href="https://github.com/archivist/archivist-dev">Archivist Dev</a> during development of <a href="#archivist-core">Core</a> components.</p>
+
+            <h2><a id="user-content-gulp" class="anchor" href="#gulp" aria-hidden="true"><span class="octicon octicon-link"></span></a>Gulp</h2>
+
+            <p>Archivist shipped with a number of gulp scripts for bundling every component. If you installed Gulp globally you can use it for bundling each component individually. Just gulp with one of this suffixes: manager, i18n, writer, reader, browser, resources, maps. Calling just gulp will run all of them.</p>
+
+            <h1><a id="user-content-deploy-archivist" class="anchor" href="#deploy-archivist" aria-hidden="true"><span class="octicon octicon-link"></span></a>Deploy Archivist</h1>
+
+            <p>For running full version of Archivist platform you'll need:</p>
+
+            <ul>
+            <li>Node.js server</li>
+            <li>MongoDB server</li>
+            <li>Elastic Search instance</li>
+            <li>HTTP static server</li>
+            </ul>
+
+            <p>For a platform hosting you can use <a href="http://heroku.com/">Heroku</a> or whatever you want. But our advise is to use <a href="https://github.com/progrium/dokku">dokku</a>. In fact <a href="https://www.digitalocean.com">DigitalOcean</a> have a <a href="https://www.digitalocean.com/features/one-click-apps/dokku">special distro with dokku</a> and a lot of documentation <a href="https://www.digitalocean.com/community/tutorials/how-to-use-the-digitalocean-dokku-application">how to use it</a>.</p>
+
+            <p>For uploading application you can use git as described in mentioned article. Don't forget <a href="http://progrium.viewdocs.io/dokku/configuration-management/">to set environment variables</a>, it will fail without them.</p>
+
+            <p>For a MongoDB hosting you can find a lot of hosting services, you can also do it by yourself. Keep in mind that using replica set is much safer. Our choise is <a href="http://compose.io/">Compose service</a>.</p>
+
+            <p>For Elastic Search you can also find a lot of services. However we prefered to keep it in the <a href="https://www.digitalocean.com/community/tutorials/how-to-install-elasticsearch-on-an-ubuntu-vps">DigitalOcean droplet</a> in private network with application. Just give it more RAM.</p>
+          </div>
+        </div>
+    </article>
+    <!-- footer -->
+		<footer class="main-footer">
+			<div class="container">
+				<div class="row">
+					<div class="col-sm-4 col-sm-offset-2">
+						<span class="name">Data for Society e.V.</span><br>
+						Grunewaldstraße 71a<br>
+						10823 Berlin - <a href="mailto:info@data4society.org">info@data4society.org</a>
+					</div>
+					<div class="col-sm-4 text-right links">
+						<a href="/terms">Terms</a> • <a href="/privacy">Privacy</a><br>
+						<a href="https://github.com/data4society" class="social-btn"><i class="fa fa-github"></i></a>
+						<a href="https://twitter.com/_d4s_" class="social-btn"><i class="fa fa-twitter"></i></a>
+						<a href="mailto:info@data4society.org" class="social-btn"><i class="fa fa-envelope"></i></a>
+					</div>
+				</div>
+			</div>
+		</footer>
+		<!-- scripts -->
+		<script src="/jquery.min.js"></script>
+		<script src="/bootstrap.min.js"></script>
+  </body>
+</html>
